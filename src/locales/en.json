@@ -1,0 +1,117 @@
+{
+  "accept": "Accept",
+  "add": "Add",
+  "agree": "Agree",
+  "cancel": "Cancel",
+  "close": "Close",
+  "delete": "Delete",
+  "display": "Display",
+  "edit": "Edit",
+  "hide": "Hide",
+  "loading": "Loading data",
+  "minimize": "Minimize",
+  "openInNewWindow": "Open in new window",
+  "rename": "Rename",
+  "save": "Save",
+  "search": "Search",
+  "category": {
+    "create": "Create new category",
+    "delete": "Delete category",
+    "display": "Display category",
+    "hide": "Hide category",
+    "new": "New category",
+    "rename": "Rename category"
+  },
+  "desktop": {
+    "settings": {
+      "reset": "Restore default system"
+    }
+  },
+  "errors": {
+    "shortcut_exist": "Shortcut already created."
+  },
+  "folder": {
+    "create": "Create folder",
+    "title": "Title folder",
+    "rules": {
+      "title_required": "Folder name is required",
+      "title_invalid": "Invalid folder name"
+    }
+  },
+  "page_refresh": "Refresh page",
+  "signout": "Sign out",
+  "service": {
+    "utils": "Service utils"
+  },
+  "shortcut": {
+    "add_to_desktop": "Add a shortcut to desktop",
+    "create": "Create shortcut",
+    "create_folder": "Create folder",
+    "name": "Name shortcut",
+    "url": "Resource url",
+    "errors": {
+      "object_not_found": "The object referenced by this link was not found."
+    },
+    "rules": {
+      "name_required": "Shortcut name is required to create a shortcut",
+      "url_required": "Resource url is required to create a shortcut",
+      "url_valid": "Invalid resource address"
+    }
+  },
+  "shortcuts": {
+    "order": "Order shortcuts",
+    "sort": "Sort shortcuts"
+  },
+  "startmenu": {
+    "customize": "Customize startmenu",
+    "settings": "Settings",
+    "messages": {
+      "title_reset_settings_desktop": "System restore",
+      "text_reset_settings_desktop": "Are you sure you want to reset the system?"
+    }
+  },
+  "toolbar": {
+    "gridSwitcher": {
+      "modeOn": "Grid mode",
+      "modeOff": "Grid mode"
+    }
+  },
+  "toolbar_workspaces": {
+    "create": "Create new desktop",
+    "delete": "Delete current desktop",
+    "messages": {
+      "title_cant_delete": "Cannot delete current desktop",
+      "text_cant_delete": "You need at least one desktop to work.",
+      "title_create_workspace": "Enter the name of the desktop",
+      "label_create_workspace": "Desktop name",
+      "title_delete_workspace": "Delete desktop",
+      "text_delete_workspace": "Are you sure you want to delete the current desktop?"
+    }
+  },
+  "user": {
+    "email": "E-mail",
+    "interface": "Interface type",
+    "lastname": "Lastname",
+    "firstname": "Firstname",
+    "language": "Language",
+    "settings": "User settings",
+    "password": "Password",
+    "repassword": "Re-enter password",
+    "rules": {
+      "name_required": "Name must be filled",
+      "email_required": "Email must be filled",
+      "email_valid": "Invalid email",
+      "password_length": "Password must be at least 6 characters",
+      "passwords_equals": "Passwords must match"
+    }
+  },
+  "window": {
+    "close": "Close window",
+    "fullscreen": "Expand to full screen",
+    "refresh": "Refresh window"
+  },
+  "windows": {
+    "minimize": "Minimize all windows",
+    "restore": "Restore minimized windows"
+  }
+}

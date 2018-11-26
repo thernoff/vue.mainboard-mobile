@@ -1,0 +1,4 @@
+export const CONST_STORE_WINDOW = {
+  TOP_PREV_WINDOW: 1,
+  LEFT_PREV_WINDOW: 1
+}
