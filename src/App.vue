@@ -3,10 +3,11 @@
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
-      :touchless="false"
       app
       fixed
+      temporary
       width=200
+      :style="{'zIndex': 100}"
     >
       <v-list dense>
         <v-list-group
@@ -24,7 +25,7 @@
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <div
+        <v-touch
           v-for="element in category.elements"
           v-if="parseInt(element.visible)"
           ref="menuitem"
@@ -32,9 +33,7 @@
           :data-id="element.id"
           :title="element.label"
           class="mainboard-startmenu__item"
-          @click="createNewWindow(element)"
           @tap="createNewWindow(element)"
-          @touchstart="createNewWindow(element)"
         >
           <v-list-tile
             tag="a"
@@ -49,7 +48,7 @@
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-        </div>
+        </v-touch>
       </v-list-group>
       </v-list>
     </v-navigation-drawer>
@@ -59,7 +58,7 @@
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       dark
       color="primary"
-      height="40"
+      height="50"
       app
       fixed
     >
@@ -70,13 +69,25 @@
         Incom
       </v-toolbar-title>
       <v-spacer/>
+      <v-toolbar-title>
+        {{ shortNameUser }}
+      </v-toolbar-title>
+      <v-btn
+        icon
+        color="red"
+        @click="logout"
+      >
+        <i class="material-icons">
+          exit_to_app
+        </i>
+      </v-btn>
       <v-btn
         v-if="countWindows"
         icon
         color="info"
-        @click="dialogListWindows = !dialogListWindows"
+        @click="dialogThumbWindows = !dialogThumbWindows"
       >
-        {{countWindows}}
+        <span class="count-opened-windows">{{countWindows}}</span>
       </v-btn>
     </v-toolbar>
 
@@ -91,10 +102,13 @@
             :options="activeWindow"
             @contextmenu.stop.prevent="''"
           />
+
         </v-layout>
       </v-container>
     </v-content>
-
+    <div class="mainboard-mobile__wallpaper"
+      :style="{ backgroundImage: 'url('+ require('@/assets/wallpaper.jpg') +')' }"
+    ></div>
     <!--Компонент для вывода ошибок-->
     <template v-if="error">
       <v-snackbar
@@ -145,61 +159,87 @@
         </v-layout>
       </div>
     </v-dialog>
-
+    <!--Диалоговое окно для отображения миниатюр-окон-->
     <v-dialog
       class="mainboard-list-thumbs"
-      v-model="dialogListWindows"
+      v-model="dialogThumbWindows"
       fullscreen
       hide-overlay
       persistent
+      scrollable
     >
-      <!-- <mainboard-thumb-frame-window
-        v-for="window in windows"
-        :key="window.id"
-        :id="window.id"
-        :options="window"
-      >
-      </mainboard-thumb-frame-window> -->
-      <div class="mainboard-list-thumbs__container text-md-center">
-        <v-layout
-          align-center
-          justify-center
-          row
-          fill-height
 
-        >
-        <div
-          class="mainboard-thumb-window text-xs-center"
-          v-for="window in thumbWindows"
-          :key="window.id"
-        >
-        <v-card flat tile>
-          <div class="thumb-window-title">
-            <img
-              :src="getImageThumbWindow(window.object.id)"
-              :style="{width: '64px'}"
-            />
-          </div>
-          <div class="thumb-window-body text-xs-center">
-            {{window.title}}
-          </div>
-          <v-btn
-            class="thumb-window-btn-close"
-            absolute
-            fab
-            dark
-            small
-            depressed
-            color="pink"
-            @click="closeWindow(window.id)"
-            @tap="closeWindow(window.id)"
+      <div class="mainboard-list-thumbs__container text-md-center">
+        <v-container fluid grid-list-sm>
+          <v-layout
+            align-center
+            justify-center
+            row
+            wrap
+            fill-height
           >
-            <v-icon dark>close</v-icon>
-          </v-btn>
-        </v-card>
-          <!-- <iframe :src="page/banner.html" width="468" height="60" align="left"> -->
-        </div>
-        </v-layout>
+            <v-btn
+              class="mainboard-list-thumbs__btn-close"
+              fab
+              dark
+              depressed
+              color="red"
+              outline
+              @click="closeDialogListThumbs"
+              @tap="closeDialogListThumbs"
+            >
+              <v-icon dark>close</v-icon>
+            </v-btn>
+          </v-layout>
+
+          <v-layout
+            row
+            wrap
+            align-center
+          >
+            <v-flex
+              v-for="window in windows"
+              :key="window.id"
+              class="flex-window"
+              xs4
+              sm3
+              md2
+              lg1
+            >
+              <div
+                class="mainboard-thumb-window text-xs-center"
+                @click="setActiveWindow(window.id)"
+              >
+              <!-- <v-card flat tile> -->
+                <div class="mainboard-thumb-window__container">
+                  <div class="thumb-window-title">
+                    <img
+                      :src="getImageThumbWindow(window.object.id)"
+                      :style="{width: '40px'}"
+                    />
+                  </div>
+                  <div class="thumb-window-body text-xs-center">
+                    <span>{{window.title}}</span>
+                  </div>
+                </div>
+                <v-btn
+                  class="thumb-window-btn-close"
+                  absolute
+                  fab
+                  dark
+                  small
+                  depressed
+                  color="pink"
+                  @click.stop="closeWindow(window.id)"
+                  @tap.stop="closeWindow(window.id)"
+                >
+                  <v-icon dark>close</v-icon>
+                </v-btn>
+              <!-- </v-card> -->
+            </div>
+        </v-flex>
+          </v-layout>
+        </v-container>
       </div>
 
     </v-dialog>
@@ -231,7 +271,7 @@ export default {
       visibleSideBar: false,
       dialogLoading: true,
       drawer: false,
-      dialogListWindows: false,
+      dialogThumbWindows: false,
       startThumbWindow: 0
     };
   },
@@ -265,6 +305,14 @@ export default {
 
     countWindows() {
       return this.windows.length;
+    },
+
+    user() {
+      return this.$store.state.store.user;
+    },
+
+    shortNameUser() {
+      return this.user.firstname[0].toUpperCase() + "." + this.user.lastname;
     }
   },
 
@@ -297,8 +345,6 @@ export default {
       }, 800);
     });
   },
-
-  mounted() {},
 
   methods: {
     closeError() {
@@ -337,12 +383,37 @@ export default {
       return "";
     },
 
+    setActiveWindow(windowId) {
+      this.dialogThumbWindows = false;
+      this.$store.commit("setActiveWindow", windowId);
+      this.$store.dispatch("actionSaveSettingsDesktop");
+    },
+
+    closeDialogListThumbs() {
+      this.dialogThumbWindows = false;
+    },
+
     closeWindow(windowId) {
-      console.log("closeWindow windowId", windowId);
       this.$store.dispatch("actionCloseWindow", windowId).then(() => {
-        this.$store.commit("setActiveWindow");
+        if (!this.countWindows) {
+          this.dialogThumbWindows = false;
+        }
         this.$store.dispatch("actionSaveSettingsDesktop");
       });
+    },
+
+    logout() {
+      axios({
+        method: "post",
+        headers: { "Content-Type": "application/form-data" },
+        url: "/inner.php/extusers/fpage/logout/"
+      })
+        .then(() => {
+          window.location.href = "/";
+        })
+        .catch(error => {
+          console.log("error", error);
+        });
     },
 
     swipe(direction) {
@@ -379,6 +450,19 @@ export default {
   overflow: hidden;
 }
 
+.icon-folder {
+  margin-right: 3px;
+  color: #f58815;
+}
+
+.count-opened-windows {
+  font-size: 18px;
+}
+
+.mainboard-startmenu__item:nth-child(2n) {
+  background-color: rgba(208, 225, 245, 0.5);
+}
+
 .mainboard-loading__container {
   height: 100%;
   background-color: rgb(51, 60, 68);
@@ -396,31 +480,75 @@ export default {
 }
 
 .mainboard-list-thumbs__container {
+  width: 100%;
   height: 100%;
-  background-color: rgba(37, 47, 68, 0.6);
+  background-color: rgba(37, 47, 68, 0.8);
+  overflow: auto;
+}
+
+.mainboard-list-thumbs__btn-close {
+  margin-bottom: 20px !important;
+}
+
+.flex-window {
+  margin-bottom: 15px;
 }
 
 .mainboard-thumb-window {
-  width: 150px;
-  height: 150px;
+  position: relative;
+  width: 100px;
+  height: 100px;
   /* overflow: hidden; */
-  margin-right: 5px;
+  margin: 0 auto;
+  /* margin-right: 20px;
+  margin-bottom: 20px */
   background-color: #fff;
-  border: 2px solid #e91e6244 !important;
+  border: 1px solid #e91e63 !important;
   border-radius: 4px;
   webkit-box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.3);
   box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.3);
 }
 
+.mainboard-thumb-window__container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .thumb-window-title {
   font-size: 12px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.thumb-window-body {
+  padding: 3px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .thumb-window-btn-close {
-  /* position: absolute; */
-  top: -40px;
-  right: -20px;
+  width: 35px !important;
+  height: 35px !important;
+  top: -10px;
+  right: -10px;
+}
+
+.mainboard-mobile__wallpaper {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-position: center center;
+  -moz-background-size: cover; /* Firefox 3.6+ */
+  -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
+  -o-background-size: cover; /* Opera 9.6+ */
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 </style>

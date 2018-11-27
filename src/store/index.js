@@ -5,7 +5,6 @@ import interfaces from "@/store/interfaces.js";
 import shared from "@/store/shared.js";
 import startmenu from "@/store/startmenu.js";
 import store from "@/store/store.js";
-import user from "@/store/user.js";
 
 Vue.use(Vuex);
 
@@ -15,7 +14,6 @@ export default new Vuex.Store({
     startmenu,
     store,
     desktop,
-    user,
     interfaces
   },
   strict: process.env.NODE_ENV !== "production"

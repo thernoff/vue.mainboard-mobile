@@ -24,7 +24,16 @@ export default {
     widthShortcut: 100,
     heightShortcut: 100,
     folders: [],
-    dashboard: null
+    dashboard: null,
+    user: {
+      firstname: "Guest",
+      lastname: "Guest",
+      uname: "guest",
+      email: "",
+      phone: "",
+      gid: 7,
+      idActiveInterface: 2
+    }
   },
 
   mutations: {
@@ -45,7 +54,7 @@ export default {
         left,
         width: 40,
         height: 45,
-        zIndex: state.windows.length + 2,
+        zIndex: 1,
         minimize: false,
         fullscreen: false,
         closed: false,
@@ -70,8 +79,6 @@ export default {
       }
 
       const length = state.windows.push(newWindow);
-      //state.activeWindow = state.windows[length - 1];
-      state.indexActiveWindow = length - 1;
 
       state.topPrevWindow += state.stepShift;
       state.leftPrevWindow += state.stepShift;
@@ -121,8 +128,6 @@ export default {
 
     closeWindow(state, id) {
       state.activeWindow = null;
-      state.indexActiveWindow = null;
-      state.idActiveWindow = "";
 
       for (let i = 0; i < state.windows.length; i++) {
         if (id === state.windows[i].id) {
@@ -133,9 +138,6 @@ export default {
 
     closeAllWindows(state) {
       state.activeWindow = null;
-      state.indexActiveWindow = null;
-      state.idActiveWindow = "";
-
       state.windows = [];
 
       state.topPrevWindow = CONST_STORE_WINDOW.TOP_PREV_WINDOW;
@@ -188,10 +190,9 @@ export default {
         if (
           id &&
           state.activeWindow &&
-          id === state.idActiveWindow &&
+          id === state.activeWindow.id &&
           state.activeWindow.active
         ) {
-          //state.activeWindow.minimize = false;
           return;
         }
 
@@ -203,30 +204,26 @@ export default {
           state.activeWindow = state.windows.find(window => {
             return window.id === id;
           });
-          state.idActiveWindow = state.activeWindow.id;
         } else {
           for (let i = 0; i < state.windows.length; i++) {
             if (state.windows[i].active) {
               state.activeWindow = state.windows[i];
-              state.idActiveWindow = state.windows[i].id;
               break;
             }
           }
-
-          if (!state.activeWindow || !state.idActiveWindow) {
+          if (!state.activeWindow) {
             state.activeWindow = state.windows[0];
-            state.idActiveWindow = state.windows[0].id;
           }
+          console.log("setActiveWindow state.activeWindow 1", state.activeWindow);
         }
-        //state.activeWindow.minimize = false;
+
+        console.log("setActiveWindow state.activeWindow 2", state.activeWindow);
         state.activeWindow.active = true;
-        console.log("setActiveWindow state.activeWindow", state.activeWindow);
       } else {
         state.activeWindow = null;
-        state.idActiveWindow = "";
       }
 
-      if (state.activeWindow) {
+      /* if (state.activeWindow) {
         state.maxZIndex += 1;
         const zIndex = state.activeWindow.zIndex;
         state.windows.forEach(function (window) {
@@ -235,7 +232,7 @@ export default {
           }
         });
         state.activeWindow.zIndex = state.windows.length + 1;
-      }
+      } */
     },
 
     unsetActiveWindow(state) {
@@ -245,12 +242,11 @@ export default {
           console.log("index", index);
           state.activeWindow = window;
           state.activeWindow.active = true;
-          state.idActiveWindow = state.activeWindow.id;
           return true;
         }
       });
 
-      if (state.activeWindow) {
+      /* if (state.activeWindow) {
         state.maxZIndex += 1;
         const zIndex = state.activeWindow.zIndex;
         state.windows.forEach(function (window) {
@@ -259,7 +255,7 @@ export default {
           }
         });
         state.activeWindow.zIndex = state.windows.length;
-      }
+      } */
     },
 
     setNotActiveWindows(state) {
@@ -267,11 +263,15 @@ export default {
         window.active = false;
       });
       state.activeWindow = null;
-      state.indexActiveWindow = null;
-      state.idActiveWindow = "";
     },
 
+    setUser(state, data) {
+      state.user = data;
+    },
 
+    saveUser(state, user) {
+      state.user.email = user.email;
+    }
   },
 
   actions: {
@@ -310,7 +310,7 @@ export default {
           if (response.data.settingsDesktop) {
             const windows = response.data.settingsDesktop.windows;
             if (windows && windows.length > 0) {
-              commit("setWindows", state.activeWorkspace.windows);
+              commit("setWindows", windows);
               commit("setActiveWindow");
             }
 
@@ -704,7 +704,6 @@ export default {
 
     actionSaveSettingsDesktop({ state }) {
       const windows = state.windows;
-      const folders = state.folders;
       axios({
         method: "post",
         headers: { "Content-Type": "application/form-data" },
@@ -983,6 +982,25 @@ export default {
 
     actionMoveElementFromFolderToDesktop({ commit }, data) {
       commit("moveElementFromFolderToDesktop", data);
+    },
+
+    actionSaveUser({ commit }, user) {
+      axios({
+        method: "post",
+        headers: { "Content-Type": "application/form-data" },
+        //url: 'http://esv.elxis.test/extusers/fpage/saveuser/',
+        //url: window.location.href + "extusers/fpage/saveuser/",
+        url: "/extusers/fpage/saveuser/",
+        data: user
+      })
+        .then(response => {
+          console.log("response", response);
+          commit("saveUser", user);
+        })
+        .catch(error => {
+          console.log("error", error);
+          commit("saveUser", user);
+        });
     }
   },
   getters: {

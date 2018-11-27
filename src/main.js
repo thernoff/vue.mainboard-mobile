@@ -5,6 +5,7 @@
 //import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-loader
 
 import Vue from "vue";
+import VueTouch from 'vue-touch'
 import App from "@/App.vue";
 import router from "@/router";
 import store from "@/store";
@@ -15,6 +16,8 @@ import i18n from "./i18n";
 
 //import "@/stylus/main.styl"
 import "@/main.css";
+
+Vue.use(VueTouch);
 
 //console.log('main.js i18n', i18n);
 Vue.use(Vuetify, {
