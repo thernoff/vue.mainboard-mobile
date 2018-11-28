@@ -85,12 +85,20 @@
       <v-container fluid fill-height>
         <v-layout justify-center align-center>
           <mainboard-frame-window
+            v-for="window in windows"
+            v-show="window.active"
+            :key="window.id"
+            :id="window.id"
+            :options="window"
+            @contextmenu.stop.prevent="''"
+          />
+          <!-- <mainboard-frame-window
             v-if="activeWindow"
             :key="activeWindow.id"
             :id="activeWindow.id"
             :options="activeWindow"
             @contextmenu.stop.prevent="''"
-          />
+          />-->
         </v-layout>
       </v-container>
     </v-content>
@@ -156,6 +164,7 @@
             <v-flex v-for="window in windows" :key="window.id" class="flex-window" xs4 sm3 md2 lg1>
               <div
                 class="mainboard-thumb-window text-xs-center"
+                :class="{'mainboard-thumb-window--active': window.active}"
                 @click="setActiveWindow(window.id)"
               >
                 <!-- <v-card flat tile> -->
@@ -194,7 +203,6 @@
 import Toolbar from "@/components/Desktop/Toolbar/Toolbar.vue";
 import FrameWindow from "@/components/Desktop/Window/FrameWindow.vue";
 import SideBar from "@/components/Desktop/SideBar/BaseSideBar.vue";
-import ThumbFrameWindow from "@/components/Desktop/Window/ThumbFrameWindow.vue";
 import Frame from "@/components/Desktop/Base/BaseFrame.vue";
 
 import axios from "axios";
@@ -207,7 +215,6 @@ export default {
     mainboardFrameWindow: FrameWindow,
     mainboardSideBar: SideBar,
     mainboardFrameWindow: FrameWindow,
-    mainboardThumbFrameWindow: ThumbFrameWindow,
     mainboardFrame: Frame
   },
   data() {
@@ -448,15 +455,17 @@ export default {
   position: relative;
   width: 100px;
   height: 100px;
-  /* overflow: hidden; */
   margin: 0 auto;
-  /* margin-right: 20px;
-  margin-bottom: 20px */
   background-color: #fff;
-  border: 1px solid #e91e63 !important;
+  border: 1px solid #e91e6293 !important;
   border-radius: 4px;
   webkit-box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.3);
   box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.mainboard-thumb-window--active {
+  border: 4px solid #e91e63 !important;
 }
 
 .mainboard-thumb-window__container {

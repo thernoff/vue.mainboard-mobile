@@ -13,12 +13,9 @@
     class="mainboard-window"
     @contextmenu.stop.prevent="''"
   >
-    <v-card
-      tile
-      class="mainboard-window__card"
-    >
+    <v-card tile class="mainboard-window__card">
       <v-card-title
-        :class = "{'mainboard-window__header--active': options.active}"
+        :class="{'mainboard-window__header--active': options.active}"
         :title="options.title"
         class="mainboard-window__header"
         primary-title
@@ -26,8 +23,7 @@
         <div class="mainboard-window__title">{{ options.title }}</div>
         <v-spacer/>
         <slot name="buttons"/>
-        <div
-          class="mainboard-window__group-buttons">
+        <div class="mainboard-window__group-buttons">
           <!-- <v-btn
             :title=" $t('minimize') "
             icon
@@ -37,11 +33,10 @@
             @mousedown="''"
           >
             <v-icon color="white">minimize</v-icon>
-          </v-btn> -->
+          </v-btn>-->
           <v-btn
             :title=" $t('window.close') "
             icon
-            small
             class="mainboard-window__btn"
             @click.stop="closeWindow"
           >
@@ -49,11 +44,7 @@
           </v-btn>
         </div>
       </v-card-title>
-      <div
-        ref="windowBody"
-        class="mainboard-window__body"
-        @mousedown="''"
-      >
+      <div ref="windowBody" class="mainboard-window__body" @mousedown="''">
         <slot name="body"/>
       </div>
       <v-divider/>
@@ -134,29 +125,6 @@ export default {
   background-color: #fff;
 }
 
-.mainboard-window--fullheight {
-  top: 0px !important;
-  height: 100% !important;
-}
-
-.mainboard-window--fullwidth {
-  width: 100% !important;
-}
-
-.mainboard-window--top-half {
-  top: 0px !important;
-  left: 0px !important;
-  width: 100% !important;
-  height: 50% !important;
-}
-
-.mainboard-window--bottom-half {
-  bottom: 0px !important;
-  left: 0px !important;
-  width: 100% !important;
-  height: 50% !important;
-}
-
 .mainboard-window__card {
   position: relative;
   width: 100%;
@@ -172,7 +140,7 @@ export default {
   color: #fff;
   cursor: move;
   padding: 0 5px !important;
-  height: 30px;
+  height: 45px;
   border-top-left-radius: 0px !important;
   border-top-right-radius: 0px !important;
 }
@@ -195,6 +163,9 @@ export default {
 
 .mainboard-window__btn {
   margin: 0 !important;
+  margin-left: 4px !important;
+  background-color: #344b69 !important;
+  border-color: #344b69 !important;
 }
 
 .mainboard-window__body {
@@ -216,24 +187,17 @@ export default {
   right: 0 !important;
 }
 
-.half-height {
-  height: 90% !important;
-}
-
-.half-width {
-  width: 90% !important;
-}
-
 @media (max-width: 1200px) {
   .mainboard-window__title {
-    width: 55%;
-    font-size: 14px;
+    width: 60%;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 800px) {
   .mainboard-window__title {
-    display: none;
+    /* width: 55%; */
+    font-size: 16px;
   }
 }
 </style>
