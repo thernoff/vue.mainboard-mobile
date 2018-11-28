@@ -6,51 +6,52 @@
       app
       fixed
       temporary
-      width=200
+      width="250"
       :style="{'zIndex': 100}"
     >
+      <!-- <v-layout row>
+        <v-flex xs12 sm6>
+      <v-card>-->
       <v-list dense>
         <v-list-group
           v-for="category in categories"
           v-if="parseInt(category.visible)"
           :key="category.id"
         >
-        <v-list-tile
-          slot="activator"
-        >
-          <i class="material-icons icon-folder">folder</i>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{ category.label }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-touch
-          v-for="element in category.elements"
-          v-if="parseInt(element.visible)"
-          ref="menuitem"
-          :key="element.id"
-          :data-id="element.id"
-          :title="element.label"
-          class="mainboard-startmenu__item"
-          @tap="createNewWindow(element)"
-        >
-          <v-list-tile
-            tag="a"
-          >
-            <img
-              :src="element.image"
-              :style="{width: '25px', marginRight: '5px'}"
-            >
+          <v-list-tile slot="activator">
+            <i class="material-icons icon-folder">folder</i>
             <v-list-tile-content>
+              <!-- <v-list-tile-title>
+                      <i class="material-icons icon-folder">folder</i>
+              </v-list-tile-title>-->
               <v-list-tile-title>
-                {{ element.label }}
+                <!-- <span class="short-label-category">{{ category.label }}</span> -->
+                {{ category.label }}
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-        </v-touch>
-      </v-list-group>
+          <v-touch
+            v-for="element in category.elements"
+            v-if="parseInt(element.visible)"
+            ref="menuitem"
+            :key="element.id"
+            :data-id="element.id"
+            :title="element.label"
+            class="mainboard-startmenu__item"
+            @tap="createNewWindow(element)"
+          >
+            <v-list-tile tag="a">
+              <img :src="element.image" :style="{width: '25px', marginRight: '5px'}">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ element.label }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-touch>
+        </v-list-group>
       </v-list>
+      <!--           </v-card>
+        </v-flex>
+      </v-layout>-->
     </v-navigation-drawer>
 
     <!--Компонент верхнего тулбара-->
@@ -62,24 +63,12 @@
       app
       fixed
     >
-      <v-toolbar-side-icon
-        @click="drawer = !drawer"
-      ></v-toolbar-side-icon>
-      <v-toolbar-title>
-        Incom
-      </v-toolbar-title>
+      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Incom</v-toolbar-title>
       <v-spacer/>
-      <v-toolbar-title>
-        {{ shortNameUser }}
-      </v-toolbar-title>
-      <v-btn
-        icon
-        color="red"
-        @click="logout"
-      >
-        <i class="material-icons">
-          exit_to_app
-        </i>
+      <v-toolbar-title>{{ shortNameUser }}</v-toolbar-title>
+      <v-btn icon color="red" @click="logout">
+        <i class="material-icons">exit_to_app</i>
       </v-btn>
       <v-btn
         v-if="countWindows"
@@ -92,7 +81,7 @@
     </v-toolbar>
 
     <!--Компонент рабочей области (используется для отображения остальных компонентов)-->
-     <v-content>
+    <v-content>
       <v-container fluid fill-height>
         <v-layout justify-center align-center>
           <mainboard-frame-window
@@ -102,11 +91,11 @@
             :options="activeWindow"
             @contextmenu.stop.prevent="''"
           />
-
         </v-layout>
       </v-container>
     </v-content>
-    <div class="mainboard-mobile__wallpaper"
+    <div
+      class="mainboard-mobile__wallpaper"
       :style="{ backgroundImage: 'url('+ require('@/assets/wallpaper.jpg') +')' }"
     ></div>
     <!--Компонент для вывода ошибок-->
@@ -119,42 +108,20 @@
         @input="closeError"
       >
         {{ error }}
-        <v-btn
-          dark
-          flat
-          @click="closeError"
-        >
-          {{ $t('close') }}
-        </v-btn>
+        <v-btn dark flat @click="closeError">{{ $t('close') }}</v-btn>
       </v-snackbar>
     </template>
 
     <!--Компонент окна лоадера загрузки-->
-    <v-dialog
-      v-model="dialogLoading"
-      class="mainboard-loading"
-      fullscreen
-      hide-overlay
-      persistent
-    >
+    <v-dialog v-model="dialogLoading" class="mainboard-loading" fullscreen hide-overlay persistent>
       <div class="mainboard-loading__container text-md-center">
-        <v-layout
-          align-center
-          justify-center
-          column
-          fill-height
-        >
+        <v-layout align-center justify-center column fill-height>
           <div class="mainboard-loading__progress">
-            <img
-              src="@/assets/logo-incom-loading.png"
-            >
-            <v-progress-linear
-              :indeterminate="true"
-              color="deep-orange"
-            />
+            <img src="@/assets/logo-incom-loading.png">
+            <v-progress-linear :indeterminate="true" color="deep-orange"/>
           </div>
           <div class="mainboard-loading__title">
-            <span >{{ $t("loading") }}</span>
+            <span>{{ $t("loading") }}</span>
           </div>
         </v-layout>
       </div>
@@ -168,16 +135,9 @@
       persistent
       scrollable
     >
-
       <div class="mainboard-list-thumbs__container text-md-center">
         <v-container fluid grid-list-sm>
-          <v-layout
-            align-center
-            justify-center
-            row
-            wrap
-            fill-height
-          >
+          <v-layout align-center justify-center row wrap fill-height>
             <v-btn
               class="mainboard-list-thumbs__btn-close"
               fab
@@ -192,31 +152,16 @@
             </v-btn>
           </v-layout>
 
-          <v-layout
-            row
-            wrap
-            align-center
-          >
-            <v-flex
-              v-for="window in windows"
-              :key="window.id"
-              class="flex-window"
-              xs4
-              sm3
-              md2
-              lg1
-            >
+          <v-layout row wrap align-center>
+            <v-flex v-for="window in windows" :key="window.id" class="flex-window" xs4 sm3 md2 lg1>
               <div
                 class="mainboard-thumb-window text-xs-center"
                 @click="setActiveWindow(window.id)"
               >
-              <!-- <v-card flat tile> -->
+                <!-- <v-card flat tile> -->
                 <div class="mainboard-thumb-window__container">
                   <div class="thumb-window-title">
-                    <img
-                      :src="getImageThumbWindow(window.object.id)"
-                      :style="{width: '40px'}"
-                    />
+                    <img :src="getImageThumbWindow(window.object.id)" :style="{width: '40px'}">
                   </div>
                   <div class="thumb-window-body text-xs-center">
                     <span>{{window.title}}</span>
@@ -235,13 +180,12 @@
                 >
                   <v-icon dark>close</v-icon>
                 </v-btn>
-              <!-- </v-card> -->
-            </div>
-        </v-flex>
+                <!-- </v-card> -->
+              </div>
+            </v-flex>
           </v-layout>
         </v-container>
       </div>
-
     </v-dialog>
   </v-app>
 </template>
@@ -268,7 +212,6 @@ export default {
   },
   data() {
     return {
-      visibleSideBar: false,
       dialogLoading: true,
       drawer: false,
       dialogThumbWindows: false,
@@ -367,6 +310,7 @@ export default {
     createNewWindow(element) {
       this.$store.dispatch("actionCreateNewWindow", element).then(response => {
         //this.$store.commit("closeAllWindow");
+        this.drawer = false;
         this.$store.commit("expandFullscreenWindow", response.id);
         if (response.minimize) {
           this.$store.commit("toggleMinimizeWindow", response.id);
@@ -453,6 +397,12 @@ export default {
 .icon-folder {
   margin-right: 3px;
   color: #f58815;
+}
+
+.short-label-category {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .count-opened-windows {

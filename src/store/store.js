@@ -328,7 +328,7 @@ export default {
                   server_id: "0",
                   user_id: "6",
                   access: null,
-                  label: "\u0416\u0443\u0440\u043d\u0430\u043b\u044b",
+                  label: "Управление комплексами",
                   image: null,
                   link: null,
                   visible: "1",
