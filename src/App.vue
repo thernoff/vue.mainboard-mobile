@@ -64,25 +64,26 @@
       fixed
     >
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Incom</v-toolbar-title>
+      <v-toolbar-title>{{titleToolbar}}</v-toolbar-title>
       <v-spacer/>
       <v-toolbar-title>{{ shortNameUser }}</v-toolbar-title>
-      <v-btn icon color="red" @click="logout">
-        <i class="material-icons">exit_to_app</i>
-      </v-btn>
+
       <v-btn
         v-if="countWindows"
         icon
         color="info"
-        @click="dialogThumbWindows = !dialogThumbWindows"
+        @click.stop="dialogThumbWindows = !dialogThumbWindows"
       >
         <span class="count-opened-windows">{{countWindows}}</span>
+      </v-btn>
+      <v-btn icon color="red" @click="logout">
+        <i class="material-icons">exit_to_app</i>
       </v-btn>
     </v-toolbar>
 
     <!--Компонент рабочей области (используется для отображения остальных компонентов)-->
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fluid fill-height class="mainboard-mobile__content-container">
         <v-layout justify-center align-center>
           <mainboard-frame-window
             v-for="window in windows"
@@ -92,6 +93,18 @@
             :options="window"
             @contextmenu.stop.prevent="''"
           />
+          <!-- <div
+            class="mainboard-mobile__wallpaper"
+            :style="{ backgroundImage: 'url('+ require('@/assets/logo-incom.png') +')' }"
+          ></div>-->
+          <div class="mainboard-mobile__wallpaper">
+            <mainboard-demo-info-widget v-if="isDemo"/>
+            <div
+              class="mainboard-workspace__logo text-xs-center"
+              :style="{ backgroundImage: 'url('+ require('@/assets/logo-incom.png') +')' }"
+            ></div>
+          </div>
+
           <!-- <mainboard-frame-window
             v-if="activeWindow"
             :key="activeWindow.id"
@@ -102,10 +115,7 @@
         </v-layout>
       </v-container>
     </v-content>
-    <div
-      class="mainboard-mobile__wallpaper"
-      :style="{ backgroundImage: 'url('+ require('@/assets/wallpaper.jpg') +')' }"
-    ></div>
+
     <!--Компонент для вывода ошибок-->
     <template v-if="error">
       <v-snackbar
@@ -165,7 +175,7 @@
               <div
                 class="mainboard-thumb-window text-xs-center"
                 :class="{'mainboard-thumb-window--active': window.active}"
-                @click="setActiveWindow(window.id)"
+                @click.stop="setActiveWindow(window.id)"
               >
                 <!-- <v-card flat tile> -->
                 <div class="mainboard-thumb-window__container">
@@ -204,6 +214,7 @@ import Toolbar from "@/components/Desktop/Toolbar/Toolbar.vue";
 import FrameWindow from "@/components/Desktop/Window/FrameWindow.vue";
 import SideBar from "@/components/Desktop/SideBar/BaseSideBar.vue";
 import Frame from "@/components/Desktop/Base/BaseFrame.vue";
+import DemoInfoWidget from "@/components/Desktop/Widgets/DemoInfoWidget.vue";
 
 import axios from "axios";
 
@@ -215,7 +226,8 @@ export default {
     mainboardFrameWindow: FrameWindow,
     mainboardSideBar: SideBar,
     mainboardFrameWindow: FrameWindow,
-    mainboardFrame: Frame
+    mainboardFrame: Frame,
+    mainboardDemoInfoWidget: DemoInfoWidget
   },
   data() {
     return {
@@ -263,6 +275,19 @@ export default {
 
     shortNameUser() {
       return this.user.firstname[0].toUpperCase() + "." + this.user.lastname;
+    },
+
+    isDemo() {
+      const position = window.location.href.search(/demo/);
+      if (position > 0) {
+        return true;
+      }
+      return false;
+    },
+
+    titleToolbar() {
+      const title = document.title || "";
+      return title ? title : "Incom";
     }
   },
 
@@ -495,7 +520,7 @@ export default {
   right: -10px;
 }
 
-.mainboard-mobile__wallpaper {
+.mainboard-mobile__wallpaper111 {
   position: absolute;
   padding: 0;
   margin: 0;
@@ -508,6 +533,61 @@ export default {
   -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
   -o-background-size: cover; /* Opera 9.6+ */
   background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.mainboard-mobile__wallpaper {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* background-position: 50% 50%; */
+  background-position: center center;
+  -moz-background-size: cover; /* Firefox 3.6+ */
+  -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
+  -o-background-size: cover; /* Opera 9.6+ */
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  background-color: #657b9b;
+  /* IE9, iOS 3.2+ */
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxyYWRpYWxHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIwJSIgY3k9IjAlIiByPSIxNDEuNDIxMzU2MjM3MzA5NSUiPjxzdG9wIHN0b3AtY29sb3I9IiM5OWFmY2MiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iIzMxNDc2YSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjEiLz48L3JhZGlhbEdyYWRpZW50PjxyZWN0IHg9Ii01MCIgeT0iLTUwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCN2c2dnKSIgLz48L3N2Zz4=);
+  /* Android 2.3- hack (needed for the actual radial gradient) */
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxyYWRpYWxHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIwJSIgY3k9IjAlIiByPSIxNDEuNDIxMzU2MjM3MzA5NSUiPjxzdG9wIHN0b3AtY29sb3I9IiM5OWFmY2MiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwIi8+PHN0b3Agc3RvcC1jb2xvcj0iIzMxNDc2YSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjEiLz48L3JhZGlhbEdyYWRpZW50PjxyZWN0IHg9Ii01MCIgeT0iLTUwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCN2c2dnKSIgLz48L3N2Zz4=),
+    -webkit-gradient(radial, left top, 0, left top, 723, color-stop(0, rgb(153, 175, 204)), color-stop(1, rgb(49, 71, 106)));
+  /* Android 2.3 */
+  background-image: -webkit-radial-gradient(
+    left top,
+    ellipse farthest-corner,
+    rgb(153, 175, 204) 0%,
+    rgb(49, 71, 106) 100%
+  );
+  /* IE10+ */
+  background-image: radial-gradient(
+    ellipse farthest-corner at left top,
+    rgb(153, 175, 204) 0%,
+    rgb(49, 71, 106) 100%
+  );
+  background-image: -ms-radial-gradient(
+    left top,
+    ellipse farthest-corner,
+    rgb(153, 175, 204) 0%,
+    rgb(49, 71, 106) 100%
+  );
+}
+
+.mainboard-mobile__content-container {
+  padding: 0px !important;
+}
+
+.mainboard-workspace__logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-position: center center;
   background-repeat: no-repeat;
 }
 </style>

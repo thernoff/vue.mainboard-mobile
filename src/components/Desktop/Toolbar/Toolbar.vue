@@ -8,14 +8,8 @@
       app
       fixed
     >
-      <v-toolbar-side-icon
-        @click="showDrawer"
-      ></v-toolbar-side-icon>
-      <v-toolbar-title>
-        <!-- <v-img src="@/assets/hawk.png"></v-img> -->
-        Incom
-        <!-- <img src="@/assets/hawk.png" alt=""> -->
-      </v-toolbar-title>
+      <v-toolbar-side-icon @click="showDrawer"></v-toolbar-side-icon>
+      <v-toolbar-title>{{titleToolbar}}</v-toolbar-title>
       <v-spacer/>
     </v-toolbar>
   </div>
@@ -49,6 +43,11 @@ export default {
 
     titleActiveWorkspace() {
       return this.$store.getters.getTitleActiveWorkspace;
+    },
+
+    titleToolbar() {
+      const title = document.title || "";
+      return title ? title : "Incom";
     }
   },
 
